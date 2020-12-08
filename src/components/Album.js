@@ -6,24 +6,6 @@ import Unsplash from './unsplash';
 
 import CardCtn from './CardCtn';
 
-// 取得相片
-function getImage() {
-	const self = this;
-	return Unsplash.photos.getRandom({ count: 2, width: 800, query: 'nature' })
-		.then(rsp => {
-			if (rsp.type === 'success') {
-				return rsp.response;
-			} else {
-				throw new Error('Something went wrong ...');
-			}
-		})
-		.then(data => {
-			self.setState(state => ({
-				photos: state.photos.concat(data)
-			}))
-		})
-}
-
 class Album extends React.Component {
 	constructor(props) {
 		super(props);
@@ -45,7 +27,7 @@ class Album extends React.Component {
 						{
 							this.state.photos.map((data, index) => (
 								<Col xs={6} md={4} key={data.id}>
-									<CardCtn />
+									<CardCtn {...data}/>
 								</Col>
 							))
 						}
@@ -82,6 +64,25 @@ function Navibar() {
 		</Navbar>
 	)
 }
+
+// 取得相片
+function getImage() {
+	const self = this;
+	return Unsplash.photos.getRandom({ count: 2, width: 800, query: 'nature' })
+		.then(rsp => {
+			if (rsp.type === 'success') {
+				return rsp.response;
+			} else {
+				throw new Error('Something went wrong ...');
+			}
+		})
+		.then(data => {
+			self.setState(state => ({
+				photos: state.photos.concat(data)
+			}))
+		})
+}
+
 // TODO	favorite btn in card
 // TODO download btn in card
 // TODO filter, use searching bar 
