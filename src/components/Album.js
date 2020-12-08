@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Navbar, Nav, NavDropdown, Form, Button, FormControl } from 'react-bootstrap';
-import { Container, Row, Col, Image } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import Unsplash from './unsplash';
 
 import CardCtn from './CardCtn';

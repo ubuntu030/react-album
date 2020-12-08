@@ -5,7 +5,7 @@ import { Card, Button } from 'react-bootstrap';
 const CardCtn = (props) => {
 	console.log(props)
 	let {
-		id: id,
+		id,
 		description: desc,
 		alt_description: alt_desc,
 		urls: {
@@ -23,7 +23,7 @@ const CardCtn = (props) => {
 				<Card.Text>
 					{desc ? desc : alt_desc}
 				</Card.Text>
-				<Button variant="primary">Download</Button>{' '}
+				<Button variant="primary" id={id}>Download</Button>{' '}
 				<Button variant="outline-danger">Favorite</Button>
 			</Card.Body>
 		</Card>
