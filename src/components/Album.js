@@ -1,16 +1,58 @@
 import React from 'react';
 
 import { Navbar, Nav, NavDropdown, Form, Button, FormControl } from 'react-bootstrap';
+import { Container, Row, Col, Image } from 'react-bootstrap';
 import Unsplash from './unsplash';
 
+import CardCtn from './CardCtn';
 
-
-
+// 取得相片
+function getImage() {
+	const self = this;
+	return Unsplash.photos.getRandom({ count: 2, width: 800, query: 'nature' })
+		.then(rsp => {
+			if (rsp.type === 'success') {
+				return rsp.response;
+			} else {
+				throw new Error('Something went wrong ...');
+			}
+		})
+		.then(data => {
+			self.setState(state => ({
+				photos: state.photos.concat(data)
+			}))
+		})
+}
 
 class Album extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			photos: []
+		}
+	}
+
+	componentDidMount() {
+		getImage.call(this);
+	}
+
 	render() {
 		return (
-			<Navibar />
+			<div>
+				<Navibar />
+				<Container>
+					<Row>
+						{
+							this.state.photos.map((data, index) => (
+								<Col xs={6} md={4} key={data.id}>
+									<CardCtn />
+								</Col>
+							))
+						}
+					</Row>
+					<Button onClick={() => getImage.call(this)}>Get pic!</Button>
+				</Container>
+			</div>
 		);
 	}
 }
@@ -18,12 +60,12 @@ class Album extends React.Component {
 function Navibar() {
 	return (
 		<Navbar bg="light" expand="lg">
-			<Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+			<Navbar.Brand href="#home">Album</Navbar.Brand>
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="mr-auto">
 					<Nav.Link href="#home">Home</Nav.Link>
-					<Nav.Link href="#link">Link</Nav.Link>
+					<Nav.Link href="#link">Favorite</Nav.Link>
 					<NavDropdown title="Dropdown" id="basic-nav-dropdown">
 						<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
 						<NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
@@ -40,26 +82,9 @@ function Navibar() {
 		</Navbar>
 	)
 }
+// TODO	favorite btn in card
+// TODO download btn in card
+// TODO filter, use searching bar 
 
-// 取得相片
-function getImage() {
-	const self = this;
-	Unsplash.photos.getRandomPhoto({ count: 2, width: 800, query: 'nature' })
-		.then(rsp => {
-			if (rsp.ok) {
-				return rsp.json();
-			} else {
-				throw new Error('Something went wrong ...');
-			}
-		})
-		.then(json => {
-			console.log(json);
-			self.setState(state => ({
-				imgs: state.imgs.concat(json),
-				isLoading: false
-			}));
-		})
-		.catch(error => self.setState({ error, isLoading: false }));
-}
 
 export default Album;
