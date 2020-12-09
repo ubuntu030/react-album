@@ -5,6 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Unsplash from './unsplash';
 
 import CardCtn from './CardCtn';
+import LoadingButton from './LoadingButton';
 
 class Album extends React.Component {
 	constructor(props) {
@@ -13,7 +14,8 @@ class Album extends React.Component {
 			photos: [],
 			fmtPhotos: {},
 			favorite: [],
-			view: 'home'
+			view: 'home',
+			isLoading: false
 		}
 		this.handleAddFavorite = this.handleAddFavorite.bind(this);
 		this.handleAddFavorite = this.handleAddFavorite.bind(this);
@@ -49,7 +51,7 @@ class Album extends React.Component {
 		let elm = null;
 		return (
 			<div>
-				<Navibar onChangeView={this.handleChangeView} />
+				<Navibar fixed="top" onChangeView={this.handleChangeView} />
 				<Container>
 					<Row>
 						{
@@ -66,7 +68,10 @@ class Album extends React.Component {
 							})
 						}
 					</Row>
-					<Button onClick={() => getImage.call(this)}>Get pic!</Button>
+					<LoadingButton
+						onClickFn={getImage.bind(this)}
+						isLoading={this.state.isLoading}
+					/>
 				</Container>
 			</div>
 		);
@@ -103,6 +108,9 @@ function Navibar(params) {
 // 取得相片
 function getImage() {
 	const self = this;
+	self.setState({
+		isLoading: true
+	})
 	return Unsplash.photos.getRandom({ count: 2, width: 800, query: 'nature' })
 		.then(rsp => {
 			if (rsp.type === 'success') {
@@ -113,7 +121,8 @@ function getImage() {
 		})
 		.then(data => {
 			self.setState(state => ({
-				photos: state.photos.concat(data)
+				photos: state.photos.concat(data),
+				isLoading: false
 			}))
 			formatPhotos.call(self, self.state.photos);
 		})
@@ -130,8 +139,8 @@ function formatPhotos() {
 	// console.log(self.state.fmtPhotos);
 }
 
-// TODO	favorite btn in card
-// TODO download btn in card
+
+
 // TODO filter, use searching bar 
 
 
