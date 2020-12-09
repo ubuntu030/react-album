@@ -12,11 +12,12 @@ const LoadingButton = props => {
 		<Button
 			onClick={isLoading ? null : onClickFn}
 			disabled={isLoading}
+			variant="outline-info"
 			style={{
 				position: "fixed",
-				left: "50%",
+				left: "90%",
 				bottom: "0%",
-				transform: "translate(-50%, -50%)"
+				transform: "translate(0%, -50%)"
 			}}>
 			{isLoading? 'Loading...': 'GET PIC!'}
 		</Button>
