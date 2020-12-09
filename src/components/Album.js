@@ -29,12 +29,12 @@ class Album extends React.Component {
 		const self = this;
 		let newData = Object.assign({}, self.state.fmtPhotos);
 
-		newData[id].isFavorite = newData[id].isFavorite? false: true;
+		newData[id].isFavorite = newData[id].isFavorite ? false : true;
 		this.setState({
 			fmtPhotos: newData
 		});
 		// console.log(self.state.fmtPhotos)
-		
+
 	}
 
 	handleChangeView(param) {
@@ -45,7 +45,8 @@ class Album extends React.Component {
 	}
 
 	render() {
-		let state = this.state;
+		const state = this.state;
+		let elm = null;
 		return (
 			<div>
 				<Navibar onChangeView={this.handleChangeView} />
@@ -53,19 +54,15 @@ class Album extends React.Component {
 					<Row>
 						{
 							Object.keys(state.fmtPhotos).map(key => {
-								if (state.view === 'favorite' && state.fmtPhotos[key].isFavorite) {
-									return (
-										<Col xs={6} md={4} key={key}>
-											<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
-										</Col>
-									)
-								} else {
-									return (
-										<Col xs={6} md={4} key={key}>
-											<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
-										</Col>
-									)
+								elm = (<Col xs={6} md={4} key={key}>
+									<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
+								</Col>)
+								if (state.view === 'home') {
+									return elm
+								} else if (state.view === 'favorite' && state.fmtPhotos[key].isFavorite) {
+									return elm
 								}
+								return null;
 							})
 						}
 					</Row>
