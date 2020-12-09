@@ -10,26 +10,63 @@ class Album extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			photos: []
+			photos: [],
+			fmtPhotos: {},
+			favorite: [],
+			view: 'home'
 		}
+		this.handleAddFavorite = this.handleAddFavorite.bind(this);
+		this.handleAddFavorite = this.handleAddFavorite.bind(this);
+		this.handleChangeView = this.handleChangeView.bind(this);
 	}
+
 
 	componentDidMount() {
 		getImage.call(this);
 	}
 
+	handleAddFavorite(id) {
+		const self = this;
+		let newData = Object.assign({}, self.state.fmtPhotos);
+
+		newData[id].isFavorite = newData[id].isFavorite? false: true;
+		this.setState({
+			fmtPhotos: newData
+		});
+		// console.log(self.state.fmtPhotos)
+		
+	}
+
+	handleChangeView(param) {
+		this.setState({
+			view: param ? param : 'home'
+		})
+		console.log('set view:' + param);
+	}
+
 	render() {
+		let state = this.state;
 		return (
 			<div>
-				<Navibar />
+				<Navibar onChangeView={this.handleChangeView} />
 				<Container>
 					<Row>
 						{
-							this.state.photos.map((data, index) => (
-								<Col xs={6} md={4} key={data.id}>
-									<CardCtn {...data}/>
-								</Col>
-							))
+							Object.keys(state.fmtPhotos).map(key => {
+								if (state.view === 'favorite' && state.fmtPhotos[key].isFavorite) {
+									return (
+										<Col xs={6} md={4} key={key}>
+											<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
+										</Col>
+									)
+								} else {
+									return (
+										<Col xs={6} md={4} key={key}>
+											<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
+										</Col>
+									)
+								}
+							})
 						}
 					</Row>
 					<Button onClick={() => getImage.call(this)}>Get pic!</Button>
@@ -39,15 +76,16 @@ class Album extends React.Component {
 	}
 }
 
-function Navibar() {
+function Navibar(params) {
+	const { onChangeView } = params;
 	return (
 		<Navbar bg="light" expand="lg">
 			<Navbar.Brand href="#home">Album</Navbar.Brand>
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="mr-auto">
-					<Nav.Link href="#home">Home</Nav.Link>
-					<Nav.Link href="#link">Favorite</Nav.Link>
+					<Nav.Link href="#home" onClick={() => onChangeView('home')}>Home</Nav.Link>
+					<Nav.Link href="#link" onClick={() => onChangeView('favorite')}>Favorite</Nav.Link>
 					<NavDropdown title="Dropdown" id="basic-nav-dropdown">
 						<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
 						<NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
@@ -80,7 +118,19 @@ function getImage() {
 			self.setState(state => ({
 				photos: state.photos.concat(data)
 			}))
+			formatPhotos.call(self, self.state.photos);
 		})
+}
+
+function formatPhotos() {
+	const self = this;
+	let fmtPhotos = {};
+	this.state.photos.forEach(data => {
+		fmtPhotos[data.id] = data;
+		fmtPhotos[data.id].isFavorite = false;
+	})
+	self.setState({ fmtPhotos: fmtPhotos })
+	// console.log(self.state.fmtPhotos);
 }
 
 // TODO	favorite btn in card
