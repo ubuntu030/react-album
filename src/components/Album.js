@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Navbar, Nav, NavDropdown, Form, Button, FormControl } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Form, Button, FormControl, Badge } from 'react-bootstrap';
 import { Container, Row, Col } from 'react-bootstrap';
 import Unsplash from './unsplash';
 
@@ -13,9 +13,9 @@ class Album extends React.Component {
 		this.state = {
 			photos: [],
 			fmtPhotos: {},
-			favorite: [],
 			view: 'home',
-			isLoading: false
+			isLoading: false,
+			favorNum: 0
 		}
 		this.handleAddFavorite = this.handleAddFavorite.bind(this);
 		this.handleAddFavorite = this.handleAddFavorite.bind(this);
@@ -30,13 +30,16 @@ class Album extends React.Component {
 	handleAddFavorite(id) {
 		const self = this;
 		let newData = Object.assign({}, self.state.fmtPhotos);
+		let favorNumCount;
 
 		newData[id].isFavorite = newData[id].isFavorite ? false : true;
-		this.setState({
-			fmtPhotos: newData
-		});
-		// console.log(self.state.fmtPhotos)
+		// 計算當前favor+-
+		favorNumCount = self.state.favorNum + (newData[id].isFavorite ? 1 : -1);
 
+		this.setState({
+			fmtPhotos: newData,
+			favorNum: favorNumCount
+		});
 	}
 
 	handleChangeView(param) {
@@ -51,7 +54,7 @@ class Album extends React.Component {
 		let elm = null;
 		return (
 			<div>
-				<Navibar fixed="top" onChangeView={this.handleChangeView} />
+				<Navibar fixed="top" onChangeView={this.handleChangeView} favorNum={state.favorNum} />
 				<Container>
 					<Row>
 						{
@@ -79,7 +82,7 @@ class Album extends React.Component {
 }
 
 function Navibar(params) {
-	const { onChangeView } = params;
+	const { onChangeView, favorNum } = params;
 	return (
 		<Navbar bg="light" expand="lg">
 			<Navbar.Brand href="#home">Album</Navbar.Brand>
@@ -87,7 +90,12 @@ function Navibar(params) {
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="mr-auto">
 					<Nav.Link href="#home" onClick={() => onChangeView('home')}>Home</Nav.Link>
-					<Nav.Link href="#link" onClick={() => onChangeView('favorite')}>Favorite</Nav.Link>
+					<Nav.Link href="#link" onClick={() => onChangeView('favorite')}>
+						Favorite
+						<Badge pill variant="danger">
+							{favorNum > 0 ? favorNum : null}
+						</Badge>
+					</Nav.Link>
 					<NavDropdown title="Dropdown" id="basic-nav-dropdown">
 						<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
 						<NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
@@ -138,8 +146,6 @@ function formatPhotos() {
 	self.setState({ fmtPhotos: fmtPhotos })
 	// console.log(self.state.fmtPhotos);
 }
-
-
 
 // TODO filter, use searching bar 
 
