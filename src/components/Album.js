@@ -6,6 +6,7 @@ import Unsplash from './unsplash';
 
 import CardCtn from './CardCtn';
 import LoadingButton from './LoadingButton';
+import Upload from './Upload';
 
 class Album extends React.Component {
 	constructor(props) {
@@ -15,11 +16,14 @@ class Album extends React.Component {
 			fmtPhotos: {},
 			view: 'home',
 			isLoading: false,
-			favorNum: 0
+			favorNum: 0,
+			uploadFile: null
 		}
 		this.handleAddFavorite = this.handleAddFavorite.bind(this);
 		this.handleAddFavorite = this.handleAddFavorite.bind(this);
 		this.handleChangeView = this.handleChangeView.bind(this);
+		this.handleSelectUpload = this.handleSelectUpload.bind(this);
+		this.handleUpload = this.handleUpload.bind(this);
 	}
 
 
@@ -41,6 +45,36 @@ class Album extends React.Component {
 			favorNum: favorNumCount
 		});
 	}
+	// 選擇上傳照片
+	handleSelectUpload(event) {
+		if (event && event.target && event.target.files) {
+			this.setState({
+				uploadFile: event.target.files[0]
+			});
+			console.log(event.target.files[0]);
+		}
+	}
+	// 上傳照片
+	handleUpload() {
+		const self = this;
+		if (self.state.uploadFile) {
+			const data = new FormData();
+			data.append('file', self.state.uploadFile)
+
+			fetch('http://localhost:3000/upload', {
+				method: 'POST',
+				body: data
+			})
+				.then(resp => {
+					console.log(resp.json())
+				})
+				.catch(
+					error => console.log(error) // Handle the error response object
+				);
+
+		}
+	}
+
 
 	handleChangeView(param) {
 		this.setState({
@@ -58,17 +92,21 @@ class Album extends React.Component {
 				<Container>
 					<Row>
 						{
-							Object.keys(state.fmtPhotos).map(key => {
-								elm = (<Col xs={6} md={4} key={key}>
-									<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
-								</Col>)
-								if (state.view === 'home') {
-									return elm
-								} else if (state.view === 'favorite' && state.fmtPhotos[key].isFavorite) {
-									return elm
-								}
-								return null;
-							})
+							(state.view === 'upload') ?
+								<Upload onChangeHandler={this.handleSelectUpload} onUploadHandler={this.handleUpload} /> :
+								(
+									Object.keys(state.fmtPhotos).map(key => {
+										elm = (<Col xs={6} md={4} key={key}>
+											<CardCtn onAddFavorite={this.handleAddFavorite} {...this.state.fmtPhotos[key]} />
+										</Col>)
+										if (state.view === 'home') {
+											return elm
+										} else if (state.view === 'favorite' && state.fmtPhotos[key].isFavorite) {
+											return elm
+										}
+										return null;
+									})
+								)
 						}
 					</Row>
 					<LoadingButton
@@ -96,6 +134,7 @@ function Navibar(params) {
 							{favorNum > 0 ? favorNum : null}
 						</Badge>
 					</Nav.Link>
+					<Nav.Link href="#upload" onClick={() => onChangeView('upload')}>Upload</Nav.Link>
 					<NavDropdown title="Dropdown" id="basic-nav-dropdown">
 						<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
 						<NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
