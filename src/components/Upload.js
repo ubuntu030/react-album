@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 
 function Upload(props) {
-	const { onChangeHandler, onUploadHandler} = props;
+	const { onChangeHandler, onUploadHandler } = props;
 
 	return (
 		<div>
-			<input type="file" name="file" onChange={(event) => onChangeHandler(event)} />
+			<input type="file" id="file" name="file" onChange={(event) => onChangeHandler(event)} />
 			<button onClick={onUploadHandler}>upload!</button>
 		</div>
 	)
