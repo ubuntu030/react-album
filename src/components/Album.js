@@ -71,9 +71,17 @@ class Album extends React.Component {
 				method: 'POST',
 				body: formData
 			})
-				.then(resp => {
-					// TODO: 上傳後將照片展示出來
-					console.log(resp.json())
+				// https://stackoverflow.com/questions/59394620/why-fetch-returns-promise-pending
+				.then(resp => resp.json())
+				.then(data => {
+					console.log('uploaded:', data);
+					// 更新狀態
+					self.setState(state => ({
+						photos: state.photos.concat(data.imgs),
+						isLoading: false
+					}))
+					formatPhotos.call(self, self.state.photos);
+					console.log(self.state.photos);
 				})
 				.catch(
 					error => console.log(error) // Handle the error response object

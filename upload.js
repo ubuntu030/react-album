@@ -25,9 +25,11 @@ http.createServer((req, res) => {
 					extname = path.extname(file).toLowerCase()
 					return ((extname === '.png') || (extname === '.jpg'))
 				});
+				newFiles = setImgsInfo(newFiles)
 				respData.status = 'ok';
 				respData.imgs = newFiles;
-				res.end(JSON.stringify(respData));
+				res.write(JSON.stringify(respData))
+				res.end();
 			});
 		}
 		// 處理上傳
@@ -46,4 +48,17 @@ http.createServer((req, res) => {
 	})
 }).listen(8080)
 
-
+function setImgsInfo(imgs) {
+	return imgs.map(img => {
+		return {
+			id: img,
+			description: 'my upload img',
+			urls: {
+				small: '/' + img
+			},
+			user: {
+				name: 'Max'
+			},
+		}
+	});
+}
