@@ -57,23 +57,22 @@ class Album extends React.Component {
 	// 上傳照片
 	handleUpload() {
 		// https://stackoverflow.com/questions/45892610/formidable-always-returns-empty-fields-and-files-when-i-upload-a-file-in-node-js
-		
+
 		const self = this;
 		if (self.state.uploadFile) {
 			let formData = new FormData();
-			formData.append('img', self.state.uploadFile)
+			formData.append('img', self.state.uploadFile);
+			formData.append('type', 'get');
 			/**
 			 * header的影響，需特別處理成URL-encoded string, or URLSearchParams
 			 * https://stackoverflow.com/questions/46640024/how-do-i-post-form-data-with-fetch-api
 			 */
 			fetch('http://localhost:8080/upload', {
 				method: 'POST',
-				// headers: {
-				// 	'Content-Type': 'application/x-www-form-urlencoded',
-				// },
 				body: formData
 			})
 				.then(resp => {
+					// TODO: 上傳後將照片展示出來
 					console.log(resp.json())
 				})
 				.catch(

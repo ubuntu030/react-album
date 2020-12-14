@@ -1,6 +1,7 @@
 const http = require('http');
 const formidable = require('formidable');
 const fs = require('fs');
+const path = require('path');
 
 http.createServer((req, res) => {
 	res.writeHead(200,
@@ -10,10 +11,26 @@ http.createServer((req, res) => {
 		});
 	const form = formidable({ multiples: true, uploadDir: __dirname });
 	let respData = {
-		status: 'fail'
+		status: 'fail',
+		imgs: []
 	};
 
 	form.parse(req, function (err, fields, file) {
+		// 讀取 public 下的照片
+		if (fields && fields.type === 'get') {
+			let extname = null;
+			return fs.readdir(__dirname + '\\public\\', (err, files) => {
+				// 過濾副檔名
+				let newFiles = files.filter(function (file) {
+					extname = path.extname(file).toLowerCase()
+					return ((extname === '.png') || (extname === '.jpg'))
+				});
+				respData.status = 'ok';
+				respData.imgs = newFiles;
+				res.end(JSON.stringify(respData));
+			});
+		}
+		// 處理上傳
 		if (typeof file === 'object' && Object.keys(file).length > 0) {
 			let oldpath = file.img.path;
 			let newpath = __dirname + '\\public\\' + file.img.name;
