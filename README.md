@@ -1,7 +1,11 @@
 # About The Project
 
 A simple example of album complishing with React.
-There are several function in the example including fetching picture from [unsplash](https://unsplash.com/)、getting from local folder and adding heart to picture you like it!
+There are several function in the example including fetching picture from [unsplash](https://unsplash.com/)、getting from local folder and adding heart to picture you like it!\
+You able to upload image as well, useing the command below 
+
+### `node server.js`
+
 
 ![image](https://raw.githubusercontent.com/ubuntu030/react-album/053a444eba6378ba18792f6be23d1981f6f56f01/example.png)
 
