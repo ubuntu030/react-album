@@ -28,6 +28,7 @@ class Album extends React.Component {
 
 	componentDidMount() {
 		getImage.call(this);
+		getImageLocal.call(this);
 	}
 	// 加入喜愛
 	handleAddFavorite(id) {
@@ -61,14 +62,13 @@ class Album extends React.Component {
 		if (self.state.uploadFile) {
 			let formData = new FormData();
 			formData.append('img', self.state.uploadFile);
-			formData.append('type', 'get');
 			/**
 			 * header的影響，需特別處理成URL-encoded string, or URLSearchParams
 			 * https://stackoverflow.com/questions/46640024/how-do-i-post-form-data-with-fetch-api
 			 */
 			fetch('http://localhost:8080/server', {
 				method: 'POST',
-				body: formData
+				body: formData,
 			})
 				// https://stackoverflow.com/questions/59394620/why-fetch-returns-promise-pending
 				.then(resp => resp.json())
@@ -168,6 +168,28 @@ function getImage() {
 			}))
 			formatPhotos.call(self, self.state.photos);
 		})
+}
+
+function getImageLocal() {
+	const self = this;
+	self.setState({
+		isLoading: true
+	})
+	fetch('http://localhost:8080/server', {
+		method: 'GET',
+	}).then(resp => resp.json())
+		.then(data => {
+			// 更新狀態
+			self.setState(state => ({
+				photos: state.photos.concat(data.imgs),
+				isLoading: false
+			}))
+			formatPhotos.call(self, self.state.photos);
+			console.log(self.state.photos);
+		})
+		.catch(
+			error => console.log(error) // Handle the error response object
+		);
 }
 
 function formatPhotos() {
