@@ -1,3 +1,8 @@
+# About The Project
+
+A simple example of album complishing with React.
+There are several function in the example including fetching picture from [unsplash](https://unsplash.com/)、getting from local folder and adding heart to picture you like it!
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
