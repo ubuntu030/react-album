@@ -3,6 +3,8 @@
 A simple example of album complishing with React.
 There are several function in the example including fetching picture from [unsplash](https://unsplash.com/)、getting from local folder and adding heart to picture you like it!
 
+![image](https://raw.githubusercontent.com/ubuntu030/react-album/053a444eba6378ba18792f6be23d1981f6f56f01/example.png)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
