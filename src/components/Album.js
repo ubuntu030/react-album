@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Navbar, Nav, NavDropdown, Form, Button, FormControl, Badge } from 'react-bootstrap';
+import { Navbar, Nav, Badge } from 'react-bootstrap';
 import { Container, Row, Col } from 'react-bootstrap';
 import Unsplash from './unsplash';
 
@@ -26,11 +26,10 @@ class Album extends React.Component {
 		this.handleUpload = this.handleUpload.bind(this);
 	}
 
-
 	componentDidMount() {
 		getImage.call(this);
 	}
-
+	// 加入喜愛
 	handleAddFavorite(id) {
 		const self = this;
 		let newData = Object.assign({}, self.state.fmtPhotos);
@@ -67,7 +66,7 @@ class Album extends React.Component {
 			 * header的影響，需特別處理成URL-encoded string, or URLSearchParams
 			 * https://stackoverflow.com/questions/46640024/how-do-i-post-form-data-with-fetch-api
 			 */
-			fetch('http://localhost:8080/upload', {
+			fetch('http://localhost:8080/server', {
 				method: 'POST',
 				body: formData
 			})
@@ -89,8 +88,7 @@ class Album extends React.Component {
 
 		}
 	}
-
-
+	// 切換試圖 home、favorite、upload
 	handleChangeView(param) {
 		this.setState({
 			view: param ? param : 'home'
@@ -103,7 +101,22 @@ class Album extends React.Component {
 		let elm = null;
 		return (
 			<div>
-				<Navibar fixed="top" onChangeView={this.handleChangeView} favorNum={state.favorNum} />
+				<Navbar bg="light" expand="lg">
+					<Navbar.Brand href="#home">Album</Navbar.Brand>
+					<Navbar.Toggle aria-controls="basic-navbar-nav" />
+					<Navbar.Collapse id="basic-navbar-nav">
+						<Nav className="mr-auto">
+							<Nav.Link href="#home" onClick={() => this.handleChangeView('home')}>Home</Nav.Link>
+							<Nav.Link href="#link" onClick={() => this.handleChangeView('favorite')}>
+								Favorite
+						<Badge pill variant="danger">
+									{state.favorNum > 0 ? state.favorNum : null}
+								</Badge>
+							</Nav.Link>
+							<Nav.Link href="#upload" onClick={() => this.handleChangeView('upload')}>Upload</Nav.Link>
+						</Nav>
+					</Navbar.Collapse>
+				</Navbar>
 				<Container>
 					<Row>
 						{
@@ -132,39 +145,6 @@ class Album extends React.Component {
 			</div>
 		);
 	}
-}
-
-function Navibar(params) {
-	const { onChangeView, favorNum } = params;
-	return (
-		<Navbar bg="light" expand="lg">
-			<Navbar.Brand href="#home">Album</Navbar.Brand>
-			<Navbar.Toggle aria-controls="basic-navbar-nav" />
-			<Navbar.Collapse id="basic-navbar-nav">
-				<Nav className="mr-auto">
-					<Nav.Link href="#home" onClick={() => onChangeView('home')}>Home</Nav.Link>
-					<Nav.Link href="#link" onClick={() => onChangeView('favorite')}>
-						Favorite
-						<Badge pill variant="danger">
-							{favorNum > 0 ? favorNum : null}
-						</Badge>
-					</Nav.Link>
-					<Nav.Link href="#upload" onClick={() => onChangeView('upload')}>Upload</Nav.Link>
-					<NavDropdown title="Dropdown" id="basic-nav-dropdown">
-						<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-						<NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-						<NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-						<NavDropdown.Divider />
-						<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-					</NavDropdown>
-				</Nav>
-				<Form inline>
-					<FormControl type="text" placeholder="Search" className="mr-sm-2" />
-					<Button variant="outline-success">Search</Button>
-				</Form>
-			</Navbar.Collapse>
-		</Navbar>
-	)
 }
 
 // 取得相片
